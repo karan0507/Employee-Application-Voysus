@@ -12,7 +12,6 @@ export function Footer() {
             <div className="mb-4 flex justify-center md:justify-start">
               <VoysusLogo size={60} className="text-white" />
             </div>
-            <h3 className="mb-2 text-lg font-semibold text-white">Human Resources Division</h3>
             <address className="mb-4 not-italic">
               <p>5900 Finch Avenue East, Suite 200B</p>
               <p>Scarborough, ON M1B 5K7</p>

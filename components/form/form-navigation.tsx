@@ -48,8 +48,6 @@ export function FormNavigation({
             </Button>
           )}
         </div>
-
-        <p className="mt-3 text-center text-xs text-neutral-500">Auto-saves every 30 seconds</p>
       </div>
     </div>
   )

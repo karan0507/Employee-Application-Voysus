@@ -1,25 +1,19 @@
 "use client"
 
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useApplicationStore } from "@/lib/store/application-store"
+import { step1Schema, type Step1Data } from "@/lib/validation/schemas"
 import { FormInput } from "../form-input"
 
-interface Step1Data {
-  firstName: string
-  middleName: string
-  lastName: string
-  email: string
-  phone: string
-  alternatePhone: string
-  dateOfBirth: string
-  sin: string
-}
-
 interface Step1PersonalProps {
-  initialData?: Partial<Step1Data>
-  onComplete: (data: Step1Data) => void
+  onComplete: () => void
 }
 
-export function Step1Personal({ initialData, onComplete }: Step1PersonalProps) {
+export function Step1Personal({ onComplete }: Step1PersonalProps) {
+  const { personalDetails, updatePersonalDetails, setStepValidity } = useApplicationStore()
+
   const {
     register,
     handleSubmit,
@@ -27,39 +21,65 @@ export function Step1Personal({ initialData, onComplete }: Step1PersonalProps) {
     watch,
   } = useForm<Step1Data>({
     mode: "onChange",
-    defaultValues: initialData,
+    resolver: zodResolver(step1Schema),
+    defaultValues: personalDetails,
   })
 
   const formValues = watch()
 
+  // Track form validity for Next button
+  useEffect(() => {
+    setStepValidity(1, isValid)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isValid])
+
+  const onSubmit = (data: Step1Data) => {
+    updatePersonalDetails(data)
+    onComplete()
+  }
+
   return (
-    <form onSubmit={handleSubmit(onComplete)} className="space-y-6">
-      <div>
-        <h2 className="mb-2 text-2xl font-bold text-neutral-900">Personal Information</h2>
-        <p className="text-neutral-600">Please provide your basic personal details</p>
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <h2 className="text-2xl font-bold text-neutral-900">Personal Details</h2>
+
+      {/* Show validation summary */}
+      {Object.keys(errors).length > 0 && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <p className="text-sm font-medium text-red-800">
+            Please fix the following errors to continue:
+          </p>
+          <ul className="mt-2 list-inside list-disc text-sm text-red-700">
+            {errors.firstName && <li>First Name: {errors.firstName.message}</li>}
+            {errors.middleName && <li>Middle Name: {errors.middleName.message}</li>}
+            {errors.lastName && <li>Last Name: {errors.lastName.message}</li>}
+            {errors.email && <li>Email: {errors.email.message}</li>}
+            {errors.phone && <li>Phone: {errors.phone.message}</li>}
+            {errors.alternatePhone && <li>Alternate Phone: {errors.alternatePhone.message}</li>}
+          </ul>
+        </div>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         <FormInput
           label="First Name"
           required
-          {...register("firstName", {
-            required: "First name is required",
-            minLength: { value: 2, message: "Must be at least 2 characters" },
-          })}
+          {...register("firstName")}
           error={errors.firstName?.message}
           isValid={!!formValues.firstName && !errors.firstName}
         />
 
-        <FormInput label="Middle Name" {...register("middleName")} isValid={!!formValues.middleName} />
+        <FormInput
+          label="Middle Name"
+          required
+          {...register("middleName")}
+          error={errors.middleName?.message}
+          isValid={!!formValues.middleName && !errors.middleName}
+        />
 
         <FormInput
           label="Last Name"
           required
-          {...register("lastName", {
-            required: "Last name is required",
-            minLength: { value: 2, message: "Must be at least 2 characters" },
-          })}
+          {...register("lastName")}
           error={errors.lastName?.message}
           isValid={!!formValues.lastName && !errors.lastName}
         />
@@ -68,13 +88,7 @@ export function Step1Personal({ initialData, onComplete }: Step1PersonalProps) {
           label="Email Address"
           type="email"
           required
-          {...register("email", {
-            required: "Email is required",
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: "Invalid email address",
-            },
-          })}
+          {...register("email")}
           error={errors.email?.message}
           helperText="We'll send your application confirmation here"
           isValid={!!formValues.email && !errors.email}
@@ -84,57 +98,19 @@ export function Step1Personal({ initialData, onComplete }: Step1PersonalProps) {
           label="Phone Number"
           type="tel"
           required
-          {...register("phone", {
-            required: "Phone number is required",
-            pattern: {
-              value: /^[\d\s\-$$$$]+$/,
-              message: "Invalid phone number",
-            },
-          })}
+          {...register("phone")}
           error={errors.phone?.message}
-          placeholder="(XXX) XXX-XXXX"
+          placeholder="(123) 456-7890"
           isValid={!!formValues.phone && !errors.phone}
         />
 
         <FormInput
           label="Alternate Phone"
           type="tel"
-          {...register("alternatePhone", {
-            pattern: {
-              value: /^[\d\s\-$$$$]+$/,
-              message: "Invalid phone number",
-            },
-          })}
+          {...register("alternatePhone")}
           error={errors.alternatePhone?.message}
-          placeholder="(XXX) XXX-XXXX"
-          isValid={!!formValues.alternatePhone && !errors.alternatePhone}
-        />
-
-        <FormInput
-          label="Date of Birth"
-          type="date"
-          required
-          {...register("dateOfBirth", {
-            required: "Date of birth is required",
-          })}
-          error={errors.dateOfBirth?.message}
-          isValid={!!formValues.dateOfBirth && !errors.dateOfBirth}
-        />
-
-        <FormInput
-          label="Social Insurance Number"
-          required
-          {...register("sin", {
-            required: "SIN is required",
-            pattern: {
-              value: /^\d{3}-?\d{3}-?\d{3}$/,
-              message: "Invalid SIN format (XXX-XXX-XXX)",
-            },
-          })}
-          error={errors.sin?.message}
-          placeholder="XXX-XXX-XXX"
-          helperText="Your SIN is confidential and secure"
-          isValid={!!formValues.sin && !errors.sin}
+          placeholder="(123) 456-7890"
+          helperText="Optional"
         />
       </div>
 

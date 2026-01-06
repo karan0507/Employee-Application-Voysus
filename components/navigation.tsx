@@ -22,8 +22,6 @@ export function Navigation() {
     { href: "#about", label: "About" },
     { href: "#process", label: "How to Apply" },
     { href: "#benefits", label: "Why Join Us" },
-    { href: "#positions", label: "Careers" },
-    { href: "#contact", label: "Contact" },
   ]
 
   return (

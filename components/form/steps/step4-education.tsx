@@ -1,83 +1,99 @@
 "use client"
 
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useApplicationStore } from "@/lib/store/application-store"
+import { step4Schema, type Step4Data } from "@/lib/validation/schemas"
 import { FormInput } from "../form-input"
 import { FormSelect } from "../form-select"
-import { FormTextarea } from "../form-textarea"
-
-interface Step4Data {
-  highestEducation: string
-  schoolName: string
-  fieldOfStudy: string
-  graduationYear: string
-  additionalCertifications: string
-}
 
 interface Step4EducationProps {
-  initialData?: Partial<Step4Data>
-  onComplete: (data: Step4Data) => void
+  onComplete: () => void
 }
 
-const educationLevels = [
-  { value: "high-school", label: "High School Diploma/GED" },
-  { value: "college", label: "College Diploma" },
-  { value: "bachelors", label: "Bachelor's Degree" },
-  { value: "masters", label: "Master's Degree" },
-  { value: "doctorate", label: "Doctorate/PhD" },
-  { value: "trade", label: "Trade Certification" },
-  { value: "other", label: "Other" },
+const EDUCATION_LEVELS = [
+  { value: "High School", label: "High School Diploma/GED" },
+  { value: "Some College", label: "Some College" },
+  { value: "Associate Degree", label: "Associate Degree" },
+  { value: "Bachelor's Degree", label: "Bachelor's Degree" },
+  { value: "Master's Degree", label: "Master's Degree" },
+  { value: "Doctorate", label: "Doctorate/PhD" },
+  { value: "Trade Certificate", label: "Trade Certificate" },
+  { value: "Other", label: "Other" },
 ]
 
-export function Step4Education({ initialData, onComplete }: Step4EducationProps) {
+export function Step4Education({ onComplete }: Step4EducationProps) {
+  const { education, updateEducation, setStepValidity } = useApplicationStore()
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
   } = useForm<Step4Data>({
     mode: "onChange",
-    defaultValues: initialData,
+    resolver: zodResolver(step4Schema),
+    defaultValues: education,
   })
 
   const formValues = watch()
 
+  // Track form validity for Next button
+  useEffect(() => {
+    setStepValidity(4, isValid)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isValid])
+
+  const onSubmit = (data: Step4Data) => {
+    updateEducation(data)
+    onComplete()
+  }
+
   return (
-    <form onSubmit={handleSubmit(onComplete)} className="space-y-6">
-      <div>
-        <h2 className="mb-2 text-2xl font-bold text-neutral-900">Education Background</h2>
-        <p className="text-neutral-600">Share your educational qualifications</p>
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <h2 className="text-2xl font-bold text-neutral-900">Education Background</h2>
+
+      {/* Show validation summary */}
+      {Object.keys(errors).length > 0 && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <p className="text-sm font-medium text-red-800">
+            Please fix the following errors to continue:
+          </p>
+          <ul className="mt-2 list-inside list-disc text-sm text-red-700">
+            {errors.level && <li>Education Level: {errors.level.message}</li>}
+            {errors.institution && <li>Institution: {errors.institution.message}</li>}
+            {errors.fieldOfStudy && <li>Field of Study: {errors.fieldOfStudy.message}</li>}
+            {errors.graduationYear && <li>Graduation Year: {errors.graduationYear.message}</li>}
+          </ul>
+        </div>
+      )}
 
       <div className="space-y-6">
         <FormSelect
           label="Highest Level of Education"
           required
-          options={educationLevels}
-          {...register("highestEducation", {
-            required: "Please select education level",
-          })}
-          error={errors.highestEducation?.message}
+          options={EDUCATION_LEVELS}
+          {...register("level")}
+          error={errors.level?.message}
         />
 
         <FormInput
           label="School/Institution Name"
           required
-          {...register("schoolName", {
-            required: "School name is required",
-          })}
-          error={errors.schoolName?.message}
-          isValid={!!formValues.schoolName && !errors.schoolName}
+          {...register("institution")}
+          error={errors.institution?.message}
+          placeholder="e.g., University of Toronto"
+          isValid={!!formValues.institution && !errors.institution}
         />
 
         <div className="grid gap-6 md:grid-cols-2">
           <FormInput
             label="Field of Study/Major"
             required
-            {...register("fieldOfStudy", {
-              required: "Field of study is required",
-            })}
+            {...register("fieldOfStudy")}
             error={errors.fieldOfStudy?.message}
-            placeholder="e.g., Business Administration, HVAC"
+            placeholder="e.g., Business Administration"
             isValid={!!formValues.fieldOfStudy && !errors.fieldOfStudy}
           />
 
@@ -85,23 +101,12 @@ export function Step4Education({ initialData, onComplete }: Step4EducationProps)
             label="Graduation Year"
             type="number"
             required
-            {...register("graduationYear", {
-              required: "Graduation year is required",
-              min: { value: 1950, message: "Invalid year" },
-              max: { value: 2030, message: "Invalid year" },
-            })}
+            {...register("graduationYear", { valueAsNumber: true })}
             error={errors.graduationYear?.message}
             placeholder="YYYY"
             isValid={!!formValues.graduationYear && !errors.graduationYear}
           />
         </div>
-
-        <FormTextarea
-          label="Additional Certifications"
-          {...register("additionalCertifications")}
-          placeholder="List any relevant certifications, licenses, or professional development courses..."
-          helperText="Include certification names, issuing organizations, and dates"
-        />
       </div>
 
       <input type="submit" hidden />

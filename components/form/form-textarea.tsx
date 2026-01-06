@@ -14,6 +14,10 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>(
   ({ label, error, helperText, className, required, ...props }, ref) => {
     const hasError = !!error
 
+    const handlePrevent = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      e.preventDefault()
+    }
+
     return (
       <div className="w-full">
         <label className="mb-2 block text-sm font-medium text-neutral-700">
@@ -33,6 +37,9 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>(
             "min-h-[120px] resize-y",
             className,
           )}
+          onCopy={handlePrevent}
+          onCut={handlePrevent}
+          onPaste={handlePrevent}
           {...props}
         />
 

@@ -40,7 +40,7 @@ export function HeroSection() {
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row animate-slide-up delay-600">
+        <div className="flex flex-col items-center justify-center gap-4 pb-20 sm:flex-row sm:pb-0 animate-slide-up delay-600">
           <Link href="/apply">
             <Button
               size="lg"
@@ -59,12 +59,12 @@ export function HeroSection() {
             </Button>
           </a>
         </div>
+      </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="h-8 w-8 text-white/60" />
-          <p className="mt-2 text-sm text-white/60">Scroll to explore</p>
-        </div>
+      {/* Scroll indicator - moved outside content container */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce hidden sm:block">
+        <ChevronDown className="h-8 w-8 text-white/60" />
+        <p className="mt-2 text-sm text-white/60">Scroll to explore</p>
       </div>
     </section>
   )
