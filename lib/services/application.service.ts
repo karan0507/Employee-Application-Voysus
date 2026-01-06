@@ -1,11 +1,9 @@
 /**
  * Application Service
  * Handles all API calls for the employment application
- * Ready for backend integration - just update API_BASE_URL
  */
 
-// Backend API base URL (will be environment variable)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api'
+import { submitApplicationToSupabase } from './supabase-application.service'
 
 /**
  * Application submission payload type
@@ -65,6 +63,7 @@ export interface ApplicationSubmitResponse {
   applicationId?: string
   referenceNumber?: string
   message: string
+  error?: string
 }
 
 export interface ApiError {
@@ -77,47 +76,12 @@ export interface ApiError {
 }
 
 /**
- * Submit application to backend
- * Currently returns mock data - ready for real API integration
+ * Submit application to backend (Supabase)
  */
 export async function submitApplication(
   data: ApplicationPayload
 ): Promise<ApplicationSubmitResponse> {
-  try {
-    // TODO: Replace with actual API call when backend is ready
-    // const response = await fetch(`${API_BASE_URL}/applications`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(data),
-    // })
-    //
-    // if (!response.ok) {
-    //   throw new Error('Failed to submit application')
-    // }
-    //
-    // return await response.json()
-
-    // MOCK RESPONSE - Simulates successful submission
-    console.log('📤 Application submitted (MOCK):', data)
-
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    // Generate mock reference number
-    const referenceNumber = `VYS-${Date.now().toString().slice(-8)}`
-
-    return {
-      success: true,
-      applicationId: `app_${Date.now()}`,
-      referenceNumber,
-      message: 'Application submitted successfully',
-    }
-  } catch (error) {
-    console.error('❌ Application submission error:', error)
-    throw new Error('Failed to submit application. Please try again.')
-  }
+  return await submitApplicationToSupabase(data)
 }
 
 /**

@@ -139,7 +139,7 @@ export default function ApplyPage() {
         },
       }
 
-      // Submit to backend (currently mock)
+      // Submit to backend (Supabase)
       const result = await submitApplication(payload)
 
       if (result.success) {
@@ -154,13 +154,19 @@ export default function ApplyPage() {
         // Navigate to success page with reference number
         router.push(`/application-success?ref=${result.referenceNumber}`)
       } else {
-        throw new Error("Submission failed")
+        // Handle specific error from backend
+        const errorMsg = result.message || "Submission failed. Please try again."
+        setSubmissionError(errorMsg)
+        toast.error("Submission failed", {
+          description: errorMsg,
+        })
       }
     } catch (error) {
       console.error("Submission error:", error)
-      setSubmissionError("Failed to submit application. Please try again.")
+      const errorMsg = error instanceof Error ? error.message : "Failed to submit application. Please try again."
+      setSubmissionError(errorMsg)
       toast.error("Submission failed", {
-        description: "Please try again or contact support if the problem persists.",
+        description: errorMsg,
       })
     } finally {
       setSubmitting(false)
