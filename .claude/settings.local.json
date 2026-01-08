@@ -15,7 +15,14 @@
       "Bash(npm run db:test-rls:*)",
       "Bash(npm run db:delete:*)",
       "Bash(npm run db:view:*)",
-      "WebFetch(domain:voysus.com)"
+      "WebFetch(domain:voysus.com)",
+      "Bash(npx tsx:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx next lint:*)",
+      "Bash(node -c:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx next build:*)"
     ]
   }
 }

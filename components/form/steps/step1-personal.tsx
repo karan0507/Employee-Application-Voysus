@@ -1,18 +1,19 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useApplicationStore } from "@/lib/store/application-store"
-import { step1Schema, type Step1Data } from "@/lib/validation/schemas"
-import { FormInput } from "../form-input"
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useApplicationStore } from "@/lib/store/application-store";
+import { step1Schema, type Step1Data } from "@/lib/validation/schemas";
+import { FormInput } from "../form-input";
 
 interface Step1PersonalProps {
-  onComplete: () => void
+  onComplete: () => void;
 }
 
 export function Step1Personal({ onComplete }: Step1PersonalProps) {
-  const { personalDetails, updatePersonalDetails, setStepValidity } = useApplicationStore()
+  const { personalDetails, updatePersonalDetails, setStepValidity } =
+    useApplicationStore();
 
   const {
     register,
@@ -23,20 +24,20 @@ export function Step1Personal({ onComplete }: Step1PersonalProps) {
     mode: "onChange",
     resolver: zodResolver(step1Schema),
     defaultValues: personalDetails,
-  })
+  });
 
-  const formValues = watch()
+  const formValues = watch();
 
   // Track form validity for Next button
   useEffect(() => {
-    setStepValidity(1, isValid)
+    setStepValidity(1, isValid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isValid])
+  }, [isValid]);
 
   const onSubmit = (data: Step1Data) => {
-    updatePersonalDetails(data)
-    onComplete()
-  }
+    updatePersonalDetails(data);
+    onComplete();
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -49,12 +50,18 @@ export function Step1Personal({ onComplete }: Step1PersonalProps) {
             Please fix the following errors to continue:
           </p>
           <ul className="mt-2 list-inside list-disc text-sm text-red-700">
-            {errors.firstName && <li>First Name: {errors.firstName.message}</li>}
-            {errors.middleName && <li>Middle Name: {errors.middleName.message}</li>}
+            {errors.firstName && (
+              <li>First Name: {errors.firstName.message}</li>
+            )}
+            {errors.middleName && (
+              <li>Middle Name: {errors.middleName.message}</li>
+            )}
             {errors.lastName && <li>Last Name: {errors.lastName.message}</li>}
             {errors.email && <li>Email: {errors.email.message}</li>}
             {errors.phone && <li>Phone: {errors.phone.message}</li>}
-            {errors.alternatePhone && <li>Alternate Phone: {errors.alternatePhone.message}</li>}
+            {errors.alternatePhone && (
+              <li>Alternate Phone: {errors.alternatePhone.message}</li>
+            )}
           </ul>
         </div>
       )}
@@ -70,7 +77,6 @@ export function Step1Personal({ onComplete }: Step1PersonalProps) {
 
         <FormInput
           label="Middle Name"
-          required
           {...register("middleName")}
           error={errors.middleName?.message}
           isValid={!!formValues.middleName && !errors.middleName}
@@ -116,5 +122,5 @@ export function Step1Personal({ onComplete }: Step1PersonalProps) {
 
       <input type="submit" hidden />
     </form>
-  )
+  );
 }
