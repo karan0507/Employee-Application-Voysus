@@ -29,10 +29,11 @@ export const step5Schema = z.object({
     .regex(/^\d{4}-\d{2}$/, 'Invalid date format (YYYY-MM)'),
 
   endDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}$/, 'Invalid date format (YYYY-MM)')
-    .optional()
-    .or(z.literal('')),
+    .union([
+      z.string().regex(/^\d{4}-\d{2}$/, 'Invalid date format (YYYY-MM)'),
+      z.literal(''),
+    ])
+    .optional(),
 
   current: z.boolean().default(false),
 
@@ -61,19 +62,21 @@ export const step5Schema = z.object({
     ),
 
   supervisorName: z
-    .string()
-    .max(100, 'Supervisor name too long')
-    .optional()
-    .or(z.literal('')),
+    .union([
+      z.string().max(100, 'Supervisor name too long'),
+      z.literal(''),
+    ])
+    .optional(),
 
   supervisorPhone: z
-    .string()
-    .regex(
-      /^(\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/,
-      'Invalid phone number format'
-    )
-    .optional()
-    .or(z.literal('')),
+    .union([
+      z.string().regex(
+        /^(\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/,
+        'Invalid phone number format'
+      ),
+      z.literal(''),
+    ])
+    .optional(),
 
   mayContact: z.enum(['yes', 'no']).optional(),
 })

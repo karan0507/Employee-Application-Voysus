@@ -2,8 +2,8 @@ import { z } from 'zod'
 
 /**
  * Step 1: Personal Details
- * Required: firstName, middleName, lastName, email, phone
- * Optional: alternatePhone
+ * Required: firstName, lastName, email, phone
+ * Optional: middleName, alternatePhone
  */
 export const step1Schema = z.object({
   firstName: z
@@ -13,10 +13,14 @@ export const step1Schema = z.object({
     .regex(/^[a-zA-Z\s'-]+$/, 'Only letters, spaces, hyphens, and apostrophes allowed'),
 
   middleName: z
-    .string()
-    .min(1, 'Middle name is required')
-    .max(50, 'Middle name must be less than 50 characters')
-    .regex(/^[a-zA-Z\s'-]+$/, 'Only letters, spaces, hyphens, and apostrophes allowed'),
+    .union([
+      z.string()
+        .max(50, 'Middle name must be less than 50 characters')
+        .regex(/^[a-zA-Z\s'-]+$/, 'Only letters, spaces, hyphens, and apostrophes allowed'),
+      z.literal(''),
+    ])
+    .optional()
+    .transform(val => val || ''),
 
   lastName: z
     .string()
@@ -38,13 +42,14 @@ export const step1Schema = z.object({
     ),
 
   alternatePhone: z
-    .string()
-    .regex(
-      /^(\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/,
-      'Invalid phone number format'
-    )
-    .optional()
-    .or(z.literal('')),
+    .union([
+      z.string().regex(
+        /^(\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/,
+        'Invalid phone number format'
+      ),
+      z.literal(''),
+    ])
+    .optional(),
 })
 
 export type Step1Data = z.infer<typeof step1Schema>

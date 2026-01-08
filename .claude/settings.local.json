@@ -4,7 +4,18 @@
       "Bash(mkdir:*)",
       "Bash(cat:*)",
       "Bash(ls:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm run db:list:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(npm run db:test:*)",
+      "Bash(npm run db:verify:*)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(npm run db:test-rls:*)",
+      "Bash(npm run db:delete:*)",
+      "Bash(npm run db:view:*)",
+      "WebFetch(domain:voysus.com)"
     ]
   }
 }

@@ -28,7 +28,7 @@ export const SKILLS_CATEGORIES = {
   ],
   'Telemarketing': [
     'Lead Generation',
-    'Appointment Setting',
+    'Drive Sales',
     'Product Promotion',
     'Market Research',
     'Cold Calling',

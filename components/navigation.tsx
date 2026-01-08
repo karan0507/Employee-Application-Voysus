@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState, useEffect } from "react"
-import { Menu, X } from "lucide-react"
-import { VoysusLogo } from "./voysus-logo"
-import { Button } from "./ui/button"
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
+import { VoysusLogo } from "./voysus-logo";
+import { Button } from "./ui/button";
 
 export function Navigation() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navLinks = [
     { href: "#about", label: "About" },
     { href: "#process", label: "How to Apply" },
     { href: "#benefits", label: "Why Join Us" },
-  ]
+  ];
 
   return (
     <>
@@ -34,7 +34,7 @@ export function Navigation() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
             <VoysusLogo size={40} className="text-primary" />
-            <span className="text-lg font-semibold text-neutral-900">VOYSUS</span>
+            {/* <span className="text-lg font-semibold text-neutral-900"></span> */}
           </Link>
 
           {/* Desktop Navigation */}
@@ -52,7 +52,9 @@ export function Navigation() {
 
           <div className="flex items-center gap-4">
             <Link href="/apply" className="hidden md:block">
-              <Button className="bg-primary text-white hover:bg-primary-700">Apply Now →</Button>
+              <Button className="bg-primary text-white hover:bg-primary-700">
+                Apply Now →
+              </Button>
             </Link>
 
             {/* Mobile Menu Button */}
@@ -90,13 +92,19 @@ export function Navigation() {
                   {link.label}
                 </a>
               ))}
-              <Link href="/apply" className="mt-4" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button className="w-full bg-primary text-white hover:bg-primary-700">Apply Now →</Button>
+              <Link
+                href="/apply"
+                className="mt-4"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Button className="w-full bg-primary text-white hover:bg-primary-700">
+                  Apply Now →
+                </Button>
               </Link>
             </div>
           </div>
         </>
       )}
     </>
-  )
+  );
 }

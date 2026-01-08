@@ -139,6 +139,9 @@ export default function ApplyPage() {
         },
       }
 
+      // Console log final payload
+      console.log("Final Application Payload:", payload)
+
       // Submit to backend (Supabase)
       const result = await submitApplication(payload)
 

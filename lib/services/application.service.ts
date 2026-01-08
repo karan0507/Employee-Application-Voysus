@@ -12,7 +12,7 @@ import { submitApplicationToSupabase } from './supabase-application.service'
 export interface ApplicationPayload {
   personalDetails: {
     firstName: string
-    middleName: string
+    middleName?: string
     lastName: string
     email: string
     phone: string
@@ -81,7 +81,68 @@ export interface ApiError {
 export async function submitApplication(
   data: ApplicationPayload
 ): Promise<ApplicationSubmitResponse> {
-  return await submitApplicationToSupabase(data)
+  try {
+    // Validate input data exists
+    if (!data) {
+      console.error('❌ submitApplication: data is null or undefined')
+      return {
+        success: false,
+        message: 'Invalid application data. Please try again.',
+      }
+    }
+
+    // Call Supabase service
+    const result = await submitApplicationToSupabase(data)
+
+    // Validate response structure
+    if (!result) {
+      console.error('❌ submitApplication: service returned null/undefined')
+      return {
+        success: false,
+        message: 'No response from service. Please try again.',
+      }
+    }
+
+    if (typeof result.success !== 'boolean') {
+      console.error('❌ submitApplication: invalid response format', result)
+      return {
+        success: false,
+        message: 'Invalid response from service. Please try again.',
+      }
+    }
+
+    if (!result.message) {
+      console.error('❌ submitApplication: response missing message', result)
+      result.message = result.success
+        ? 'Application submitted successfully'
+        : 'Application submission failed'
+    }
+
+    // Validate success response has required fields
+    if (result.success) {
+      if (!result.applicationId) {
+        console.error('❌ submitApplication: success response missing applicationId', result)
+      }
+      if (!result.referenceNumber) {
+        console.error('❌ submitApplication: success response missing referenceNumber', result)
+      }
+    }
+
+    return result
+  } catch (error) {
+    console.error('❌ submitApplication: unexpected error')
+    if (error instanceof Error) {
+      console.error('Error Message:', error.message)
+      console.error('Error Stack:', error.stack)
+    } else {
+      console.error('Error Value:', error)
+    }
+
+    return {
+      success: false,
+      message: 'Unexpected error occurred. Please try again. If the problem persists, contact HR at (416) 291-0224 or hr@voysus.com.',
+    }
+  }
 }
 
 /**

@@ -3,6 +3,12 @@
 -- ============================================================================
 -- Execute this in Supabase SQL Editor
 -- Dashboard > SQL Editor > New Query > Paste and Run
+--
+-- IMPORTANT: After running this script, verify RLS policies are working:
+--   npm run db:verify
+--
+-- If you see INSERT errors (code: 42501), run the RLS policies section again
+-- See claude/RLS-SETUP-GUIDE.md for detailed troubleshooting
 -- ============================================================================
 
 -- Drop existing table if re-running (CAREFUL IN PRODUCTION)

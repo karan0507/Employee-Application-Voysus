@@ -1,7 +1,7 @@
-import Link from "next/link"
-import { ChevronDown } from "lucide-react"
-import { VoysusLogo } from "./voysus-logo"
-import { Button } from "./ui/button"
+import Link from "next/link";
+import { ChevronDown } from "lucide-react";
+import { VoysusLogo } from "./voysus-logo";
+import { Button } from "./ui/button";
 
 export function HeroSection() {
   return (
@@ -10,7 +10,8 @@ export function HeroSection() {
       <div
         className="absolute inset-0 opacity-10"
         style={{
-          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+          backgroundImage:
+            "radial-gradient(circle, white 1px, transparent 1px)",
           backgroundSize: "24px 24px",
         }}
       />
@@ -18,7 +19,7 @@ export function HeroSection() {
       <div className="relative z-10 mx-auto max-w-5xl text-center">
         {/* Logo with fade-in animation */}
         <div className="mb-8 flex justify-center animate-fade-in">
-          <VoysusLogo size={120} className="text-white animate-scale-up" />
+          {/* <VoysusLogo size={120} className="text-white animate-scale-up" /> */}
         </div>
 
         {/* Heading */}
@@ -35,8 +36,8 @@ export function HeroSection() {
 
         {/* Description */}
         <p className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed text-white/80 text-pretty animate-fade-in delay-400 lg:text-xl">
-          We're hiring passionate professionals to join Canada's leading home comfort provider in partnership with
-          Reliance Home Comfort
+          We're hiring passionate professionals to join Canada's leading home
+          comfort provider in partnership with Reliance Home Comfort
         </p>
 
         {/* CTA Buttons */}
@@ -67,5 +68,5 @@ export function HeroSection() {
         <p className="mt-2 text-sm text-white/60">Scroll to explore</p>
       </div>
     </section>
-  )
+  );
 }
