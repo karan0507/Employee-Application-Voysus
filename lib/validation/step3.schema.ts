@@ -57,12 +57,9 @@ export const step3Schema = z.object({
   }),
 
   referral: z
-    .union([
-      z.string().max(100, 'Referral information too long'),
-      z.literal(''),
-    ])
-    .optional()
-    .transform(val => val || ''),
+    .string()
+    .max(100, 'Referral information too long')
+    .default(''),
 })
 
 export type Step3Data = z.infer<typeof step3Schema>

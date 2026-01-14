@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { TableFilters } from "./table-filters"
 import { ApplicationDetailModal } from "./application-detail-modal"
+import { EmailTemplateModal } from "./email-template-modal"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -11,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Eye, Loader2, MoreVertical, FileDown, Edit, Trash2 } from "lucide-react"
+import { Eye, Loader2, MoreVertical, FileDown, Edit, Trash2, Mail } from "lucide-react"
 
 interface Application {
   id: string
@@ -34,6 +35,7 @@ export function ApplicationsTable() {
   const [selectedApp, setSelectedApp] = useState<ApplicationDetail | null>(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [emailModalOpen, setEmailModalOpen] = useState(false)
 
   // Fetch applications list
   useEffect(() => {
@@ -117,6 +119,18 @@ export function ApplicationsTable() {
     console.log('Delete application:', id)
   }
 
+  const getSelectedEmails = () => {
+    return applications
+      .filter(app => selectedIds.has(app.id))
+      .map(app => app.email)
+  }
+
+  const getSelectedNames = () => {
+    return applications
+      .filter(app => selectedIds.has(app.id))
+      .map(app => app.email.split('@')[0])
+  }
+
   const getStatusBadgeColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'submitted':
@@ -159,11 +173,94 @@ export function ApplicationsTable() {
 
   return (
     <div className="space-y-6">
+      {/* Action Bar */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center justify-between rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white font-bold">
+              {selectedIds.size}
+            </div>
+            <span className="font-semibold text-blue-900">
+              {selectedIds.size} application{selectedIds.size !== 1 ? 's' : ''} selected
+            </span>
+          </div>
+          <Button
+            onClick={() => setEmailModalOpen(true)}
+            className="bg-blue-600 font-semibold hover:bg-blue-700"
+          >
+            <Mail className="mr-2 h-4 w-4" />
+            Send Email Template
+          </Button>
+        </div>
+      )}
+
       {/* Filters - UI Only */}
       <TableFilters selectedCount={selectedIds.size} />
 
-      {/* Table */}
-      <div className="rounded-lg border bg-white shadow-sm">
+      {/* Mobile Cards View */}
+      <div className="space-y-4 md:hidden">
+        {applications.length === 0 ? (
+          <div className="rounded-lg border bg-white p-8 text-center text-slate-500">
+            No applications found
+          </div>
+        ) : (
+          applications.map((app) => (
+            <div key={app.id} className="rounded-lg border bg-white p-4 shadow-sm">
+              <div className="mb-3 flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    checked={selectedIds.has(app.id)}
+                    onCheckedChange={(checked) => handleSelectOne(app.id, checked as boolean)}
+                  />
+                  <div>
+                    <div className="font-semibold text-slate-900">{app.email}</div>
+                    <div className="mt-1 text-xs text-slate-500">
+                      {new Date(app.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => handleViewClick(app.id)}>
+                      <Eye className="mr-2 h-4 w-4" /> View
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDownloadPDF(app.id)}>
+                      <FileDown className="mr-2 h-4 w-4" /> Download
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEdit(app.id)}>
+                      <Edit className="mr-2 h-4 w-4" /> Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDelete(app.id)} className="text-red-600">
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${getStatusBadgeColor(app.status)}`}>
+                  {app.status}
+                </span>
+                <Button
+                  onClick={() => handleDownloadPDF(app.id)}
+                  size="sm"
+                  variant="outline"
+                  className="text-xs"
+                >
+                  <FileDown className="mr-1 h-3 w-3" /> PDF
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table */}
+      <div className="hidden rounded-lg border bg-white shadow-sm md:block">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="border-b bg-neutral-50">
@@ -291,6 +388,14 @@ export function ApplicationsTable() {
           onClose={() => setSelectedApp(null)}
         />
       )}
+
+      {/* Email Template Modal */}
+      <EmailTemplateModal
+        open={emailModalOpen}
+        onClose={() => setEmailModalOpen(false)}
+        selectedEmails={getSelectedEmails()}
+        selectedNames={getSelectedNames()}
+      />
     </div>
   )
 }

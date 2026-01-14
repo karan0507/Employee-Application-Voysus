@@ -22,7 +22,17 @@
       "Bash(npx next lint:*)",
       "Bash(node -c:*)",
       "Bash(npm run build:*)",
-      "Bash(npx next build:*)"
+      "Bash(npx next build:*)",
+      "WebFetch(domain:www.voysus.com)",
+      "Bash(git checkout:*)",
+      "WebFetch(domain:clutch.co)",
+      "WebFetch(domain:www.ttec.com)",
+      "WebFetch(domain:www.concentrix.com)",
+      "WebSearch",
+      "WebFetch(domain:www.teleperformance.com)",
+      "WebFetch(domain:www.telusinternational.com)",
+      "Bash(kill:*)",
+      "Bash(git add:*)"
     ]
   }
 }

@@ -1,20 +1,26 @@
 import { Navigation } from "@/components/navigation"
-import { HeroSection } from "@/components/hero-section"
-import { AboutSection } from "@/components/about-section"
-import { ProcessSection } from "@/components/process-section"
-import { BenefitsSection } from "@/components/benefits-section"
-import { CTASection } from "@/components/cta-section"
+import { HeroWithOrbital } from "@/components/hero-with-orbital"
+import { PremiumServices } from "@/components/premium-services"
+import { PlatformShowcase } from "@/components/platform-showcase"
+import { PremiumMetrics } from "@/components/premium-metrics"
+import { RedesignedContact } from "@/components/redesigned-contact"
 import { Footer } from "@/components/footer"
+
+/**
+ * Landing Page - Professional Business Marketing Website
+ * Hero with orbital design, redesigned contact section
+ * Structure: Hero → Services → Platform → Metrics → Contact → Footer
+ */
 
 export default function LandingPage() {
   return (
     <main className="min-h-screen">
       <Navigation />
-      <HeroSection />
-      <AboutSection />
-      <ProcessSection />
-      <BenefitsSection />
-      <CTASection />
+      <HeroWithOrbital />
+      <PremiumServices />
+      <PlatformShowcase />
+      <PremiumMetrics />
+      <RedesignedContact />
       <Footer />
     </main>
   )

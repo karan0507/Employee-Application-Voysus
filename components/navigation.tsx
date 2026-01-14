@@ -19,9 +19,9 @@ export function Navigation() {
   }, []);
 
   const navLinks = [
-    { href: "#about", label: "About" },
-    { href: "#process", label: "How to Apply" },
-    { href: "#benefits", label: "Why Join Us" },
+    { href: "#services", label: "Services" },
+    { href: "#solutions", label: "Solutions" },
+    { href: "#contact", label: "Contact" },
   ];
 
   return (
@@ -51,11 +51,11 @@ export function Navigation() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/apply" className="hidden md:block">
+            <a href="#contact" className="hidden md:block">
               <Button className="bg-primary text-white hover:bg-primary-700">
-                Apply Now →
+                Get Started →
               </Button>
-            </Link>
+            </a>
 
             {/* Mobile Menu Button */}
             <button
@@ -92,15 +92,15 @@ export function Navigation() {
                   {link.label}
                 </a>
               ))}
-              <Link
-                href="/apply"
+              <a
+                href="#contact"
                 className="mt-4"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <Button className="w-full bg-primary text-white hover:bg-primary-700">
-                  Apply Now →
+                  Get Started →
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </>
