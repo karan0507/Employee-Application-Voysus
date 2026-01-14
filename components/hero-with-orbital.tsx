@@ -13,10 +13,14 @@ import {
   Users,
   Database,
   Globe,
+  Headphones,
+  Target,
+  Award,
+  Star,
 } from "lucide-react";
 import { Button } from "./ui/button";
 
-const orbitIcons = [
+const outerOrbitIcons = [
   { icon: Phone, color: "blue", angle: 0, label: "Voice CX" },
   { icon: MessageSquare, color: "purple", angle: 60, label: "Messaging" },
   { icon: BarChart3, color: "green", angle: 120, label: "Analytics" },
@@ -25,11 +29,22 @@ const orbitIcons = [
   { icon: Globe, color: "indigo", angle: 300, label: "Global" },
 ];
 
+const innerOrbitIcons = [
+  { icon: Headphones, color: "blue", angle: 0, label: "Support" },
+  { icon: Target, color: "green", angle: 90, label: "Goals" },
+  { icon: Award, color: "purple", angle: 180, label: "Quality" },
+  { icon: Star, color: "orange", angle: 270, label: "Excellence" },
+];
+
 export function HeroWithOrbital() {
   const [isHovered, setIsHovered] = useState(false);
-  const radius = 180;
 
-  const getPosition = (angle: number) => {
+  // Equal spacing: Center (140px diameter) + gap + inner orbit + gap + outer orbit
+  // Container: 500px, Center: 140px (70px radius), spacing: ~50px between each layer
+  const outerRadius = 220; // Icons on outer orbit
+  const innerRadius = 145; // Icons on inner orbit (moved outward for equal spacing)
+
+  const getPosition = (angle: number, radius: number) => {
     const radian = (angle - 90) * (Math.PI / 180);
     return {
       x: radius * Math.cos(radian),
@@ -118,20 +133,19 @@ export function HeroWithOrbital() {
         {/* Right - Orbital Design */}
         <div className="flex items-center justify-center">
           <div
-            className="relative"
-            style={{ width: "440px", height: "440px" }}
+            className="relative w-[500px] h-[500px]"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            {/* Orbit Circle */}
+            {/* Outer Orbit Circle */}
             <div
-              className="absolute inset-0 rounded-full border-2 border-dashed border-blue-300"
+              className="absolute inset-[30px] rounded-full border-2 border-dashed border-blue-300"
               style={{
                 animation: isHovered ? "none" : "spin 60s linear infinite",
               }}
             >
-              {orbitIcons.map((item, idx) => {
-                const pos = getPosition(item.angle);
+              {outerOrbitIcons.map((item, idx) => {
+                const pos = getPosition(item.angle, outerRadius);
                 const Icon = item.icon;
                 return (
                   <div
@@ -150,11 +164,38 @@ export function HeroWithOrbital() {
               })}
             </div>
 
+            {/* Inner Orbit Circle - Rotating Opposite Direction */}
+            <div
+              className="absolute inset-[105px] rounded-full border-2 border-dashed border-purple-300"
+              style={{
+                animation: isHovered ? "none" : "spinReverse 45s linear infinite",
+              }}
+            >
+              {innerOrbitIcons.map((item, idx) => {
+                const pos = getPosition(item.angle, innerRadius);
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={idx}
+                    className={`absolute flex h-12 w-12 items-center justify-center rounded-full border-2 border-slate-200 bg-${item.color}-50 shadow-lg transition-transform hover:scale-110`}
+                    style={{
+                      left: `calc(50% + ${pos.x}px)`,
+                      top: `calc(50% + ${pos.y}px)`,
+                      transform: "translate(-50%, -50%)",
+                    }}
+                    title={item.label}
+                  >
+                    <Icon className={`h-5 w-5 text-${item.color}-600`} />
+                  </div>
+                );
+              })}
+            </div>
+
             {/* Center Image */}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-              <div className="relative h-48 w-48 overflow-hidden rounded-full border-4 border-white bg-white shadow-2xl">
+              <div className="relative h-36 w-36 overflow-hidden rounded-full border-4 border-white bg-white shadow-2xl">
                 <Image
-                  src="/images/partnerBusiness.jpg"
+                  src="/Images/partnerBusiness.jpg"
                   alt="VOYSUS Partner Business"
                   fill
                   className="object-cover"
@@ -173,6 +214,14 @@ export function HeroWithOrbital() {
           }
           to {
             transform: rotate(360deg);
+          }
+        }
+        @keyframes spinReverse {
+          from {
+            transform: rotate(360deg);
+          }
+          to {
+            transform: rotate(0deg);
           }
         }
       `}</style>

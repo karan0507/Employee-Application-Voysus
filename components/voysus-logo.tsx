@@ -7,7 +7,7 @@ export function VoysusLogo({
 }) {
   return (
     <img
-      src="/images/voysusLogo.png"
+      src="/Images/voysusLogo.png"
       alt="Voysus Logo"
       width={100}
       height={100}
