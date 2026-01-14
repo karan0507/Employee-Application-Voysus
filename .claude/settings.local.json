@@ -32,7 +32,9 @@
       "WebFetch(domain:www.teleperformance.com)",
       "WebFetch(domain:www.telusinternational.com)",
       "Bash(kill:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(gh auth status:*)"
     ]
   }
 }
